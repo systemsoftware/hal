@@ -2,7 +2,10 @@
 ### HAL-9000 in real life, powered by GPT-3.5 Turbo.
 
 ## Demo
-https://hal9000-demo.glitch.me/
+* Voice Input & Speech Output: https://hal9000-demo.glitch.me/
+* Text Input & Speech Output: https://hal9000-demo.glitch.me/?text
+* Voice Input & Text Output: https://hal9000-demo.glitch.me/?alert
+* Text Input & Text Output: https://hal9000-demo.glitch.me/?text&alert
 
 ## Setup
 > Make sure you have NPM & Node.js installed first!

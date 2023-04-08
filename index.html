@@ -1,0 +1,74 @@
+<head>
+<title>HAL-9000</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/image" type="image/x-icon">
+</head>
+<style>
+body{
+background-color: black;
+font-family:'Courier New', Courier, monospace;
+overflow: hidden;
+}
+
+div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+img{
+display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+</style>
+
+<body>
+<div>
+    <img style="width: 50%" src="/image"><br>
+    <p id="p" style="font-size: xx-small;color: red;width: 100%;text-align: center;">Click HAL to ask it something. <button onclick="document.getElementById('p').innerHTML ='';localStorage.setItem('hide_tip','true')" style="font-size: xx-small;">OK</button></p>
+</div>
+</body>
+
+<script>
+const params = new URLSearchParams(window.location.search)
+const isText = params.has('text')
+const alertAnswer = params.has('alert')
+
+document.querySelector('img').addEventListener('click', async () => {
+if(isText){
+const inp = prompt("Ask HAL something")
+let answer = ""
+if(!inp){
+answer = "I'm sorry, Dave. I'm afraid I can't do that."
+}else{
+const res = await fetch(`/ask?q=${inp}`, { method:"POST" })
+answer = (await res.json()).answer
+}
+alertAnswer ? alert(answer) : speechSynthesis.speak(new SpeechSynthesisUtterance(answer))
+}else{
+if(!window.webkitSpeechRecognition && !window.SpeechRecognition) return alert("Your browser does not support speech recognition. Add ?text to the url to use text input.")
+const recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+recognition.lang = navigator.language || navigator.userLanguage;
+recognition.start();
+setTimeout(() => {
+regcognition.stop()
+}, 10000);
+recognition.onresult = async (event) => {
+const inp = event.results[0][0].transcript
+let answer = ""
+if(!inp){
+answer = "I'm sorry, Dave. I'm afraid I can't do that."
+}else{
+const res = await fetch(`/ask?q=${inp}`, { method:"POST" })
+answer = (await res.json()).answer
+}
+alertAnswer ? alert(answer) : speechSynthesis.speak(new SpeechSynthesisUtterance(answer))
+}
+}
+})
+
+if(localStorage.getItem('hide_tip') === 'true' && !params.has('tip')) document.getElementById('p').innerHTML = ''
+</script>
